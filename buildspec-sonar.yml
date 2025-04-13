@@ -10,6 +10,9 @@ phases:
     runtime-versions:
       java: corretto17
       python: 3.11
+    commands:
+      - export JAVA_HOME=$JAVA_17_HOME
+      - export PATH=$JAVA_HOME/bin:$PATH
       
   pre_build:
     commands:
