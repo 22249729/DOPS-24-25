@@ -1,0 +1,28 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    SONAR_TOKEN: prod/DOPS/22249729:sonartoken
+    Project: prod/DOPS/22249729:Project
+
+phases:
+  pre_build:
+    commands:
+      - apt-get update
+      - apt-get install -y unzip jq wget
+      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+      - unzip sonar-scanner-cli-4.8.0.2856-linux.zip
+      - export PATH=$PATH:$(pwd)/sonar-scanner-4.8.0.2856-linux/bin
+
+  build:
+    commands:
+      - sonar-scanner -Dsonar.projectKey=$Project -Dsonar.login=$SONAR_TOKEN
+      - sleep 5
+      - curl "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project" > result.json
+      - cat result.json
+      - >
+        if [ "$(jq -r '.projectStatus.status' result.json)" = "ERROR" ]; then
+          echo "SonarCloud Quality Gate failed";
+          exit 1;
+        fi
+
