@@ -6,6 +6,11 @@ env:
     Project: prod/DOPS/22249729:Project
 
 phases:
+  install:
+    runtime-versions:
+      java: corretto17
+      python: 3.11
+      
   pre_build:
     commands:
       - apt-get update
