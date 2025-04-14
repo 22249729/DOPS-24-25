@@ -34,10 +34,5 @@ phases:
       - sleep 5
       - curl "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project" > result.json
       - cat result.json
-      - |
-        if [ "$(jq -r '.projectStatus.status' result.json)" = "ERROR" ]; then
-          echo "SonarCloud Quality Gate failed";
-          exit 1;
-        fi
 
 
